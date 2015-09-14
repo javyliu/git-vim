@@ -30,9 +30,17 @@ Git-vim provides:
 [<Leader>gA] :GitAdd <cfile>
 [<Leader>gc] :GitCommit
 [<Leader>gb] :GitBlame
-
+[<Leader>gp] :GitPullRebase
+[<Leader>co] :GitCheckout <cfile>
+[<Leader>gP] :GitPush
 === In git-status buffer
 [<Enter>]    :GitAdd <cfile>
+=== In git-log buffer
+[<Enter>]    :GitDiff <cword> <cfile>
+cword is the current word under the cursor
+it must a commit digest
 
+=== In buffer
+[q]    :exit
 == License
 The MIT License

@@ -32,6 +32,9 @@ if !exists('g:git_no_map_default') || !g:git_no_map_default
     nnoremap <Leader>gc :GitCommit<Enter>
     nnoremap <Leader>gp :GitPullRebase<Enter>
     nnoremap <Leader>gb :GitBlame<Enter>
+    "git co
+    nnoremap <leader>co :GitCheckout <C-R>%<enter>:e!<enter>
+    nnoremap <leader>gP :GitPush<enter>
 endif
 
 " Ensure b:git_dir exists.
@@ -94,7 +97,16 @@ endfunction
 
 " Show diff.
 function! GitDiff(args)
-    let git_output = s:SystemGit('diff ' . a:args . ' -- ' . s:Expand('%'))
+    if a:args =~ '^<'
+      let params = s:Expand(a:args)
+      let diff_file = s:Expand('#a')
+      let b:is_git_msg_buffer = 0
+    else
+      let params = a:args
+      let diff_file = s:Expand('%')
+    endif
+
+    let git_output = s:SystemGit('diff ' . params . ' -- ' . diff_file)
     if !strlen(git_output)
         echo "No output from git command"
         return
@@ -124,6 +136,7 @@ function! GitLog(args)
     let git_output = s:SystemGit('log ' . a:args . ' -- ' . s:Expand('%'))
     call <SID>OpenGitBuffer(git_output)
     setlocal filetype=git-log
+    nnoremap <buffer> <enter> :GitDiff <cword><enter>
 endfunction
 
 " Add file to index.
@@ -163,6 +176,7 @@ endfunction
 
 " Checkout.
 function! GitCheckout(args)
+    "echo "args: " a:args
     call GitDoCommand('checkout ' . a:args)
 endfunction
 
@@ -346,6 +360,7 @@ function! s:OpenGitBuffer(content)
     setlocal nomodifiable
 
     let b:is_git_msg_buffer = 1
+    nnoremap <buffer> q :exit<Enter>
 endfunction
 
 function! s:Expand(expr)
