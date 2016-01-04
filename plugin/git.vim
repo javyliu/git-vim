@@ -232,7 +232,9 @@ function! GitBlame(...)
     let g:git_command_edit = 'leftabove vnew'
     call <SID>OpenGitBuffer(git_output)
     let g:git_command_edit = git_command_edit_save
-
+    
+    nnoremap <buffer> <enter> :GitDiff <cword><enter>
+    
     setlocal modifiable
     silent %s/\d\d\d\d\zs \+\d\+).*//
     exe 'vertical resize ' . git_blame_width
